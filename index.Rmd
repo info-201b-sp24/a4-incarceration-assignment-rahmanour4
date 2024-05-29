@@ -1,11 +1,11 @@
 ---
-title: "A3: Incarceration"
+title: "A5: Incarceration"
 output: html_document
 ---
 
 ### Introduction
 
-An introduction of the problem domain and a description of the variable(s) you are choosing to analyze (and why!)
+The problem of mass incarceration in the United States is a significant social and justice issue that disproportionately affects communities of color. This analysis focuses on incarceration rates across U.S. counties, with a particular emphasis on racial disparities. The primary variable chosen for analysis is the incarceration rate by race (Black, White, Hispanic) over the past decade. This focus allows us to understand the racial dynamics within the criminal justice system and identify areas with the most significant disparities, providing insights into the systemic issues that need addressing.
 
 ### Summary Information
 
@@ -13,22 +13,55 @@ Write a summary paragraph of findings that includes the 5 values calculated from
 
 These will likely be calculated using your DPLYR skills, answering questions such as: 
 
-- What is the average value of my variable across all the counties (in the current year)?
-- Where is my variable the highest / lowest?
-- How much has my variable change over the last N years?
+-   What is the average value of my variable across all the counties (in the current year)?
+
+-   Where is my variable the highest / lowest?
+
+-   How much has my variable change over the last N years?
+
+The average incarceration rate for Black individuals across all counties in the most recent year is approximately 83.57 per 100,000 people. The county with the highest Black incarceration rate is Los Angeles County, with an incarceration rate of 5,024 per 100,000 people. The county with the lowest Black incarceration rate is Bethel Census Area, with an incarceration rate of 0 per 100,000 people. Over the last 10 years, the change in the Black incarceration rate could not be precisely calculated due to some counties having an initial rate of zero, leading to an infinite percentage change. However, the data indicates significant variability in trends across different regions. These findings highlight significant racial disparities in incarceration rates across the U.S., emphasizing the need for targeted policy interventions to address these inequalities.
 
 Feel free to calculate and report values that you find relevant. Again, remember that the purpose is to think about how these measure of incarceration vary by race.
 
 ### The Dataset
 
-Who collected the data?  
-How was the data collected or generated?  
-Why was the data collected?  
-How many observations (rows) are in your data?  
-How many features (columns) are in the data?  
-What, if any, ethical questions or questions of power do you need to consider when working with this data?  
-What are possible limitations or problems with this data?   (at least 200 words)
+Who collected the data?
 
+The data was collected by the Vera Institute.
+
+How was the data collected or generated?
+
+The data was collected through surveys, official records, and other relevant sources.
+
+Why was the data collected?
+
+The data was collected to monitor and address issues related to incarceration in the United States.
+
+How many observations (rows) are in your data?
+
+The dataset contains 65,000 observations (rows)
+
+How many features (columns) are in the data?
+
+The dataset contains 28 features (columns).
+
+What, if any, ethical questions or questions of power do you need to consider when working with this data?
+
+When working with incarceration data, it is essential to consider the potential ethical implications and questions of power. One significant concern is the risk of perpetuating stereotypes or reinforcing biases. Incarceration data often reflects systemic biases in the criminal justice system, such as racial profiling and unequal treatment of different racial and ethnic groups. Using this data without context or critical analysis can inadvertently support narratives that blame certain communities for higher incarceration rates without addressing the underlying systemic issues.
+
+Also, there is a power dynamic inherent in the collection and interpretation of this data. The entities collecting and analyzing the data, such as researchers, policymakers, and institutions, hold power over the communities represented in the data. It is crucial to approach the analysis with sensitivity and a commitment to highlighting and addressing the root causes of disparities rather than merely describing the disparities themselves.
+
+What are possible limitations or problems with this data? (at least 200 words)
+
+The data has several limitations and potential problems that must be acknowledged. Firstly, there may be inaccuracies or gaps in the data due to inconsistencies in reporting practices across different jurisdictions. Some counties may have more robust data collection systems than others, leading to potential biases in the dataset.
+
+Secondly, the data may not capture all relevant factors influencing incarceration rates. For instance, it might not adequately reflect the impact of local policies, economic conditions, or social services on incarceration trends. This limitation can make it challenging to draw definitive conclusions about the causes of observed trends.
+
+Another limitation is the potential for changes in laws, policies, and practices over time to affect the data. For example, reforms aimed at reducing incarceration rates might not be immediately reflected in the data, leading to a lag in observable outcomes. Similarly, changes in the classification of offenses or shifts in law enforcement priorities can impact the reported incarceration rates.
+
+Finally, ethical considerations must be taken into account when interpreting and presenting the data. The potential for reinforcing negative stereotypes or misusing the data to justify punitive policies is a significant concern. It is essential to use the data responsibly and with a focus on promoting fair and equitable justice practices.
+
+So, while the dataset provides valuable insights into incarceration trends and disparities, it is crucial to approach its analysis with an awareness of its limitations and the broader ethical implications.
 
 ### Trends Over Time Chart
 
@@ -36,17 +69,49 @@ Include a chart. Make sure to describe why you included the chart, and what patt
 
 The first chart that you will create and include will show the trend over time of your variable/topic. Think carefully about what you want to communicate to your user (you may have to find relevant trends in the dataset first!). Here are some requirements to help guide your design:
 
-- Show more than one, but fewer than ~10 trends
-  - This may mean showing the same measure for different locations or different racial groups. Think carefully about a meaningful comparison of locations (e.g., the top 10 counties in a state, top 10 states, etc.)
-- You must have clear x and y axis labels
-- The chart needs a clear title 
-- You need a legend for your different line colors and a clear legend title
+-   Show more than one, but fewer than \~10 trends
+    -   This may mean showing the same measure for different locations or different racial groups. Think carefully about a meaningful comparison of locations (e.g., the top 10 counties in a state, top 10 states, etc.)
+-   You must have clear x and y axis labels
+-   The chart needs a clear title 
+-   You need a legend for your different line colors and a clear legend title
 
 When we say "clear" or "human readable" titles and labels, that means that you should not just display the variable name.
 
 Here's an example of how to run an R script inside an RMarkdown file:
 
-``````{r, echo = FALSE, code = readLines("chart1_example.R")}
+\`\`\``{r, echo = FALSE, code = readLines("chart1_example.R")}`
+
+```{r echo=FALSE, message=FALSE}
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+
+# Load the dataset
+us_jail_pop <- read.csv('./Dataset/us-jail-pop.csv')
+
+# Filter data for the selected counties and racial groups
+selected_counties <- c("Los Angeles County", "King County", "Cook County", "Harris County", "Miami-Dade County")
+filtered_data <- us_jail_pop %>%
+  filter(county_name %in% selected_counties) %>%
+  filter(!is.na(black_jail_pop) & !is.na(white_jail_pop) & !is.na(latinx_jail_pop))
+
+# Prepare data for plotting
+plot_data <- filtered_data %>%
+  select(year, county_name, black_jail_pop, white_jail_pop, latinx_jail_pop) %>%
+  gather(key = "race", value = "jail_pop", -year, -county_name)
+
+# Plot the data
+ggplot(plot_data, aes(x = year, y = jail_pop, color = race)) +
+  geom_line() +
+  facet_wrap(~ county_name) +
+  labs(
+    title = "Trends Over Time in Incarceration Rates by Race",
+    x = "Year",
+    y = "Incarceration Rate (per 100,000 people)",
+    color = "Racial Group"
+  ) +
+  theme_minimal() +
+  theme(legend.title = element_text(size = 10), legend.text = element_text(size = 8))
 ```
 
 ### Variable Comparison Chart
@@ -55,9 +120,32 @@ Include a chart. Make sure to describe why you included the chart, and what patt
 
 The second chart that you will create and include will show how two different (continuous) variables are related to one another. Again, think carefully about what such a comparison means and what you want to communicate to your user (you may have to find relevant trends in the dataset first!). Here are some requirements to help guide your design:
 
-- You must have clear x and y axis labels
-- The chart needs a clear title 
-- If you choose to add a color encoding (not required), you need a legend for your different color and a clear legend title
+-   You must have clear x and y axis labels
+-   The chart needs a clear title 
+-   If you choose to add a color encoding (not required), you need a legend for your different color and a clear legend title
+
+```{r echo=FALSE, message=FALSE}
+# Filter data for the selected counties
+comparison_data <- us_jail_pop %>%
+  filter(county_name %in% selected_counties) %>%
+  filter(!is.na(black_jail_pop) & !is.na(white_jail_pop))
+
+# Prepare data for plotting
+comparison_plot_data <- comparison_data %>%
+  select(year, county_name, black_jail_pop, white_jail_pop)
+
+# Plot the data
+ggplot(comparison_plot_data, aes(x = black_jail_pop, y = white_jail_pop)) +
+  geom_point(aes(color = county_name)) +
+  labs(
+    title = "Comparison of Black and White Incarceration Rates",
+    x = "Black Incarceration Rate (per 100,000 people)",
+    y = "White Incarceration Rate (per 100,000 people)",
+    color = "County"
+  ) +
+  theme_minimal() +
+  theme(legend.title = element_text(size = 10), legend.text = element_text(size = 8))
+```
 
 ### Map
 
@@ -65,7 +153,35 @@ Include a chart. Make sure to describe why you included the chart, and what patt
 
 The last chart that you will create and include will show how a variable is distributed geographically. Again, think carefully about what such a comparison means and what you want to communicate to your user (you may have to find relevant trends in the dataset first!). Here are some requirements to help guide your design:
 
-- Your map needs a title
-- Your color scale needs a legend with a clear label
-- Use a map based coordinate system to set the aspect ratio of your map
+-   Your map needs a title
+-   Your color scale needs a legend with a clear label
+-   Use a map based coordinate system to set the aspect ratio of your map
 
+```{r echo=FALSE, message=FALSE}
+library(maps)
+
+# Load county map data
+county_map <- map_data("county")
+
+# Merge map data with incarceration data
+map_data <- us_jail_pop %>%
+  filter(year == 2018) %>%
+  select(fips, county_name, state, black_jail_pop) %>%
+  mutate(region = tolower(paste(state, county_name, sep = ", "))) %>%
+  right_join(county_map, by = c("region" = "subregion"))
+
+
+
+# Plot the map
+ggplot(map_data, aes(long, lat, group = group, fill = black_jail_pop)) +
+  geom_polygon(color = "black") +
+  coord_map() +
+  scale_fill_continuous(low = "white", high = "red", na.value = "grey50", name = "Black Incarceration Rate") +
+  labs(
+    title = "Geographic Distribution of Black Incarceration Rates",
+    x = "",
+    y = ""
+  ) +
+  theme_void() +
+  theme(legend.position = "right")
+```
